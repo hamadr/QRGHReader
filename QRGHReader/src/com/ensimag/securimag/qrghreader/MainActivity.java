@@ -27,13 +27,13 @@ public class MainActivity extends Activity {
 	Button scanButton;
 	Button validateButton;
 	ImageScanner scanner;
-
+	FrameLayout previewLayout;
 	private boolean barcodeScanned = false;
 	private boolean previewing = true;
 	static {
 		System.loadLibrary("iconv");
 	} 
-	
+
 	public class ValidateButtonOnClickListener implements OnClickListener {
 
 		public void onClick(View v) {
@@ -46,33 +46,38 @@ public class MainActivity extends Activity {
 		}
 
 	}
-	
+
 	public void onCreate(Bundle savedInstanceState) {
-		
+
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_main);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 		autoFocusHandler = new Handler();
-		mCamera = getCameraInstance();
 
 		/* Instance barcode scanner */
 		scanner = new ImageScanner();
 		scanner.setConfig(0, Config.X_DENSITY, 3);
 		scanner.setConfig(0, Config.Y_DENSITY, 3);
 
-		mPreview = new CameraPreview(this, mCamera, previewCb, autoFocusCB);
-		
-		FrameLayout preview = (FrameLayout)findViewById(R.id.cameraPreview);
-		preview.addView(mPreview);
-
+		previewLayout = (FrameLayout)findViewById(R.id.cameraPreview);
 		scanText = (TextView)findViewById(R.id.scanText);
-
 		scanButton = (Button)findViewById(R.id.ScanButton);
-
 		validateButton = (Button)findViewById(R.id.validateButton);
-		
+		validateButton.setOnClickListener(new ValidateButtonOnClickListener());
+	}
+
+	public void onPause() {
+		super.onPause();
+		releaseCamera();
+		previewLayout.removeAllViews();
+	}
+	
+	@Override
+	protected void onResume() {
+		mCamera = getCameraInstance();
+		mPreview = new CameraPreview(this, mCamera, previewCb, autoFocusCB);
+		previewLayout.addView(mPreview);
 		scanButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (barcodeScanned) {
@@ -86,15 +91,9 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
-		
-		validateButton.setOnClickListener(new ValidateButtonOnClickListener());
+		super.onResume();
 	}
-
-	public void onPause() {
-		super.onPause();
-		releaseCamera();
-	}
-
+	
 	/** A safe way to get an instance of the Camera object. */
 	public static Camera getCameraInstance(){
 		Camera c = null;
@@ -141,7 +140,7 @@ public class MainActivity extends Activity {
 					scanText.setText("barcode result " + sym.getData());
 					barcodeScanned = true;
 				}
-				
+
 				validateButton.setClickable(true);
 			}
 		}
