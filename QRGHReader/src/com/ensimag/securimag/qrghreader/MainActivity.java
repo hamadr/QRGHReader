@@ -11,12 +11,12 @@ import android.os.Handler;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import com.ensimag.securimag.qrghreader.Base64;
 
 public class MainActivity extends Activity {
 	private Camera mCamera;
@@ -38,13 +38,12 @@ public class MainActivity extends Activity {
 
 		public void onClick(View v) {
 			// TODO verifier ce qui a été scanné, et eventuellement ouvrir le browser.
-			String url = "http://www.example.com";
+			String scannedText = scanText.getText().toString();
+			String url = "http://www.google.com/?id=" + Base64.encodeToChar(scannedText.getBytes(), false).toString();
 			Intent i = new Intent(Intent.ACTION_VIEW);
 			i.setData(Uri.parse(url));
 			startActivity(i);
-
 		}
-
 	}
 
 	public void onCreate(Bundle savedInstanceState) {
