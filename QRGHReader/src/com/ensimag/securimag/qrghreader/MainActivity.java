@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
 		public void onClick(View v) {
 			// TODO verifier ce qui a été scanné, et eventuellement ouvrir le browser.
 			String scannedText = scanText.getText().toString();
-			String url = "http://www.google.com/?id=" + Base64.encodeToChar(scannedText.getBytes(), false).toString();
+			String url = "https://ssl.grehack.org/en/mon_compte/conf_scan_qrcode/validate/?qrcode=" + Base64.encodeToChar(scannedText.getBytes(), false).toString();
 			Intent i = new Intent(Intent.ACTION_VIEW);
 			i.setData(Uri.parse(url));
 			startActivity(i);
@@ -136,7 +136,7 @@ public class MainActivity extends Activity {
 
 				SymbolSet syms = scanner.getResults();
 				for (Symbol sym : syms) {
-					scanText.setText("barcode result " + sym.getData());
+					scanText.setText(sym.getData());
 					barcodeScanned = true;
 				}
 
