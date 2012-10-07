@@ -1,5 +1,8 @@
 package com.ensimag.securimag.qrghreader;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import net.sourceforge.zbar.*;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
@@ -35,11 +38,14 @@ public class MainActivity extends Activity {
 	} 
 
 	public class ValidateButtonOnClickListener implements OnClickListener {
-
 		public void onClick(View v) {
-			// TODO verifier ce qui a été scanné, et eventuellement ouvrir le browser.
 			String scannedText = scanText.getText().toString();
-			String url = "https://ssl.grehack.org/en/mon_compte/conf_scan_qrcode/validate/?qrcode=" + Base64.encodeToChar(scannedText.getBytes(), false).toString();
+			String url = "https://ssl.grehack.org/en/mon_compte/conf_scan_qrcode/validate/?qrcode=";
+			try {
+				url += URLEncoder.encode(scannedText, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
 			Intent i = new Intent(Intent.ACTION_VIEW);
 			i.setData(Uri.parse(url));
 			startActivity(i);
@@ -145,7 +151,6 @@ public class MainActivity extends Activity {
 		}
 	};
 
-	// Mimic continuous auto-focusing
 	AutoFocusCallback autoFocusCB = new AutoFocusCallback() {
 		public void onAutoFocus(boolean success, Camera camera) {
 			autoFocusHandler.postDelayed(doAutoFocus, 1000);
