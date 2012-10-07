@@ -19,7 +19,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import com.ensimag.securimag.qrghreader.Base64;
 
 public class MainActivity extends Activity {
 	private Camera mCamera;
